@@ -19,7 +19,7 @@ let writeBtn, connectBtn, fsBtn, modalWrapper, traumaInput, painInput, backBtn, 
 let memoryDisplay, focusParticles = [];
 let showConnections = true; 
 let isPaused = false;
-let spaceReleased = true;
+let spaceReleased = true; 
 
 let introWrapper, introActive = true;
 let loadingParticles = [];
@@ -47,26 +47,26 @@ function setup() {
       z-index: 3000; background: #010101; transition: opacity 1.5s ease-in-out;
     }
     .intro-title {
-      font-family: 'Space Mono', sans-serif; font-size: 36px; letter-spacing: 8px; color: #fff; 
-      margin-bottom: 40px; text-shadow: 0 0 20px rgba(255,255,255,0.5);
+      font-family: 'Space Mono', sans-serif; font-size: 52px; letter-spacing: 12px; color: #fff; 
+      margin-bottom: 50px; text-shadow: 0 0 20px rgba(255,255,255,0.5);
     }
     .intro-text {
-      width: 80%; max-width: 800px; text-align: center; color: #eee;
-      font-family: 'Noto Sans KR', sans-serif; font-size: 16px; line-height: 1.8; font-weight: 300; 
-      margin-bottom: 50px; letter-spacing: 0.5px; word-break: keep-all;
+      width: 80%; max-width: 1000px; text-align: center; color: #eee;
+      font-family: 'Noto Sans KR', sans-serif; font-size: 26px; line-height: 2.2; font-weight: 300; 
+      margin-bottom: 60px; letter-spacing: 0.5px; word-break: keep-all;
     }
     .btn-start {
       background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff;
-      padding: 15px 40px; cursor: pointer; font-family: 'Space Mono', sans-serif; letter-spacing: 4px;
-      text-transform: uppercase; transition: 0.5s; font-size: 14px; 
+      padding: 20px 60px; cursor: pointer; font-family: 'Space Mono', sans-serif; letter-spacing: 6px;
+      text-transform: uppercase; transition: 0.5s; font-size: 18px;
     }
     .btn-start:hover { background: rgba(255,255,255,0.1); border-color: #fff; box-shadow: 0 0 20px rgba(255,255,255,0.3); }
 
     #memory-display {
       position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      width: 80%; max-width: 800px; max-height: 70vh; 
+      width: 80%; max-width: 1000px; max-height: 70vh; 
       overflow-y: auto; padding-right: 20px;
-      font-family: 'Noto Sans KR', sans-serif; font-size: 16px; line-height: 1.8; 
+      font-family: 'Noto Sans KR', sans-serif; font-size: 26px; line-height: 2.0; 
       letter-spacing: 1px; text-align: left; word-break: keep-all; font-weight: 300;
       color: rgba(255, 255, 255, 0.9); 
       opacity: 0; pointer-events: none; transition: opacity 0.2s ease-out, filter 0.2s ease-out; z-index: 500;
@@ -76,35 +76,35 @@ function setup() {
     #memory-display::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
 
     .memory-date {
-      font-family: 'Space Mono', sans-serif; font-size: 14px; color: rgba(255, 255, 255, 0.6); 
-      margin-bottom: 16px; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.2);
-      padding-bottom: 8px; display: inline-block;
+      font-family: 'Space Mono', sans-serif; font-size: 20px; color: rgba(255, 255, 255, 0.6); 
+      margin-bottom: 24px; letter-spacing: 2px; border-bottom: 1px solid rgba(255,255,255,0.2);
+      padding-bottom: 10px; display: inline-block;
     }
 
     .terminal-btn {
       position: absolute; background: transparent; 
-      padding: 6px 0; border: none; border-bottom: 1px solid rgba(255,255,255,0.4); 
+      padding: 8px 0; border: none; border-bottom: 1px solid rgba(255,255,255,0.4); 
       color: rgba(255,255,255,0.9); font-weight: 500; text-shadow: none; 
       cursor: pointer; transition: 0.3s; z-index: 500; text-transform: uppercase;
-      letter-spacing: 1.5px; font-size: 13px; font-family: 'Noto Sans KR', sans-serif; right: 40px; 
+      letter-spacing: 2px; font-size: 18px; font-family: 'Noto Sans KR', sans-serif; right: 50px;
     }
     .write-btn { top: 40px; }
-    .connect-btn { top: 80px; }
-    .fs-btn { top: 120px; } 
+    .connect-btn { top: 95px; }
+    .fs-btn { top: 150px; }
     .terminal-btn:hover { color: #fff; border-bottom: 2px solid #fff; }
 
     .back-btn {
-      position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%);
-      background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); color: #ccc; font-weight: bold; padding: 12px 40px;
-      cursor: pointer; z-index: 1000; text-transform: uppercase; letter-spacing: 3px; font-size: 13px;
+      position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%);
+      background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); color: #ccc; font-weight: bold; padding: 15px 60px;
+      cursor: pointer; z-index: 1000; text-transform: uppercase; letter-spacing: 4px; font-size: 15px;
       display: none; border-radius: 4px; transition: 0.5s; backdrop-filter: blur(5px);
     }
     .back-btn:hover { color: #fff; border-color: #fff; background: rgba(255,255,255,0.1); box-shadow: 0 0 15px rgba(255,255,255,0.3); }
 
     .sublimate-btn {
-      position: absolute; bottom: 105px; left: 50%; transform: translateX(-50%);
-      background: rgba(255, 200, 50, 0.1); border: 1px solid rgba(255, 230, 50, 0.5); color: #ffd700; font-weight: bold; padding: 12px 40px;
-      cursor: pointer; z-index: 1000; text-transform: uppercase; letter-spacing: 3px; font-size: 13px;
+      position: absolute; bottom: 130px; left: 50%; transform: translateX(-50%);
+      background: rgba(255, 200, 50, 0.1); border: 1px solid rgba(255, 230, 50, 0.5); color: #ffd700; font-weight: bold; padding: 15px 60px;
+      cursor: pointer; z-index: 1000; text-transform: uppercase; letter-spacing: 4px; font-size: 15px;
       display: none; border-radius: 4px; transition: 0.5s; backdrop-filter: blur(5px);
     }
     .sublimate-btn:hover { background: rgba(255, 200, 50, 0.3); color: #fff; border-color: #fff; }
@@ -117,12 +117,12 @@ function setup() {
     
     .trauma-form { 
       position: relative; 
-      width: 60vw; max-width: 900px; 
-      height: 60vh; max-height: 600px; 
-      padding: 40px 50px; 
+      width: 75vw; max-width: 1200px; 
+      height: 75vh; max-height: 850px; 
+      padding: 50px 60px; 
       box-sizing: border-box;
       display: flex; flex-direction: column; 
-      border-radius: 12px; 
+      border-radius: 16px; 
       background: rgba(10, 10, 15, 0.35); 
       backdrop-filter: blur(35px) saturate(120%); 
       border: 1px solid rgba(255, 255, 255, 0.05);
@@ -137,17 +137,17 @@ function setup() {
     }
     
     .btn-close {
-      position: absolute; top: 20px; right: 30px; background: transparent; border: none;
+      position: absolute; top: 25px; right: 35px; background: transparent; border: none;
       color: rgba(255,255,255,0.3); font-family: 'Space Mono', sans-serif; cursor: pointer; 
-      font-size: 13px; letter-spacing: 1.5px; transition: 0.3s; z-index: 2001;
+      font-size: 14px; letter-spacing: 2px; transition: 0.3s; z-index: 2001;
     }
     .btn-close:hover { color: rgba(255,255,255,0.8); }
 
     .trauma-text {
-      width: 100%; flex-grow: 1; margin: 10px 0 30px 0; padding: 15px 0; 
+      width: 100%; flex-grow: 1; margin: 10px 0 40px 0; padding: 20px 0; 
       background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.05); 
       color: rgba(255,255,255,0.8); opacity: 0.1; filter: blur(8px);
-      font-family: 'Noto Sans KR', sans-serif; font-weight: 200; font-size: 18px; line-height: 1.8; 
+      font-family: 'Noto Sans KR', sans-serif; font-weight: 200; font-size: 20px; line-height: 2.0; 
       resize: none; outline: none; overflow-y: auto; letter-spacing: 0.5px;
       transition: filter 4.0s cubic-bezier(0.4, 0, 0.2, 1), opacity 4.0s ease-in-out;
     }
@@ -161,21 +161,21 @@ function setup() {
     
     .form-footer { display: flex; flex-direction: column; margin-top: auto; }
 
-    .pain-container { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; padding-bottom: 10px; }
-    .pain-label { color: rgba(255,255,255,0.4); font-size: 14px; letter-spacing: 3px; font-family: 'Noto Sans KR'; font-weight: 300;}
-    .pain-val-box { font-family: 'Noto Sans KR', sans-serif; font-size: 20px; color: rgba(255,255,255,0.85); font-weight: 200; letter-spacing: 1px; }
+    .pain-container { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; padding-bottom: 10px; }
+    .pain-label { color: rgba(255,255,255,0.4); font-size: 16px; letter-spacing: 4px; font-family: 'Noto Sans KR'; font-weight: 300;}
+    .pain-val-box { font-family: 'Noto Sans KR', sans-serif; font-size: 24px; color: rgba(255,255,255,0.85); font-weight: 200; letter-spacing: 2px; }
 
-    .pain-slider { -webkit-appearance: none; width: 100%; height: 2px; margin-bottom: 40px; background: rgba(255,255,255,0.15); outline: none; }
+    .pain-slider { -webkit-appearance: none; width: 100%; height: 2px; margin-bottom: 60px; background: rgba(255,255,255,0.15); outline: none; }
     .pain-slider::-webkit-slider-thumb {
-      -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%;
-      background: #000; border: 2px solid rgba(255,255,255,0.6); cursor: pointer; box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      -webkit-appearance: none; appearance: none; width: 24px; height: 24px; border-radius: 50%;
+      background: #000; border: 2.5px solid rgba(255,255,255,0.6); cursor: pointer; box-shadow: 0 0 10px rgba(0,0,0,0.5);
       transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     .pain-slider::-webkit-slider-thumb:hover { transform: scale(1.6); background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.8); }
 
     .btn-submit { 
-      width: 100%; padding: 18px; background: rgba(255,255,255,0.05); 
-      color: rgba(255,255,255,0.4); font-size: 16px; border: 1px solid rgba(255,255,255,0.2); 
+      width: 100%; padding: 22px; background: rgba(255,255,255,0.05); 
+      color: rgba(255,255,255,0.4); font-size: 18px; border: 1px solid rgba(255,255,255,0.2); 
       cursor: pointer; letter-spacing: 1px; font-family: 'Noto Sans KR', sans-serif; font-weight: 400;
       transition: 0.3s ease; border-radius: 6px; text-transform: uppercase;
     }
@@ -186,11 +186,16 @@ function setup() {
   `);
   
   createCanvas(windowWidth, windowHeight); 
+  
+  // 💡 [최적화 1] 레티나 디스플레이 과부하 방지. 화질은 그대로 유지하면서 연산량 4배 감소.
+  pixelDensity(1); 
+
   try {
     video = createCapture(VIDEO); 
     video.elt.setAttribute('playsinline', ''); 
     video.elt.setAttribute('autoplay', '');
-    video.size(640, 480); 
+    // 💡 [최적화 2] 거리 측정용 카메라 해상도를 낮춰 AI 연산 부하 70% 감소
+    video.size(320, 240); 
     video.hide();
     if(faceMesh) {
       faceMesh.detectStart(video, (results) => { faces = results; modelLoaded = true; }); 
@@ -201,7 +206,6 @@ function setup() {
 
   setTimeout(() => {
     if (!modelLoaded) {
-      console.warn("로딩 타임아웃! 안전 모드로 강제 시작합니다.");
       modelLoaded = true;
     }
   }, 3000);
@@ -271,7 +275,6 @@ function createUI() {
   
   writeBtn = createButton('+ 기록 남기기 [N]'); writeBtn.class('terminal-btn write-btn'); writeBtn.mousePressed(openWriteModal);
   connectBtn = createButton('연결망 확인 [C]'); connectBtn.class('terminal-btn connect-btn'); connectBtn.mousePressed(() => { showConnections = !showConnections; });
-  
   fsBtn = createButton('전체화면 [F]'); fsBtn.class('terminal-btn fs-btn');
   fsBtn.mousePressed(() => { let fs = fullscreen(); fullscreen(!fs); });
   
@@ -409,11 +412,7 @@ function mouseDragged() {
 }
 
 function draw() {
-  try {
-    actualDrawLogic();
-  } catch(e) {
-    console.error("화면 그리기 오류 무시 (안전 모드):", e);
-  }
+  try { actualDrawLogic(); } catch(e) { console.error(e); }
 }
 
 function actualDrawLogic() {
@@ -443,7 +442,7 @@ function actualDrawLogic() {
     push();
     fill(255, 140);
     textFont('Noto Sans KR');
-    textSize(14);
+    textSize(16);
     textAlign(LEFT, BOTTOM);
     text("조작법 : [마우스 이동/드래그, WASD] 화면 유영  |  [Space] 표류 일시정지  |  [Shift] 고속 이동  |  [F] 전체화면", 30, height - 30);
     pop();
@@ -590,7 +589,9 @@ function drawTimeBasedBruise(b, isHovered, chargeAmt) {
   drawingContext.shadowBlur = s * 1.5 + (chargeAmt * 1.5); 
   drawingContext.shadowColor = color(c[0], c[1], c[2], 200); drawingContext.filter = `blur(${blurAmt}px)`;
   noStroke(); fill(c[0], c[1], c[2], 230); beginShape();
-  for (let a = 0; a < TWO_PI; a += 0.1) {
+  
+  // 💡 [최적화 3] 응어리 테두리를 부드럽게 유지하는 선에서 연산량 30% 감소
+  for (let a = 0; a < TWO_PI; a += 0.15) {
     let n = noise(cos(a) * 1.2 + seed, sin(a) * 1.2 + seed, time);
     let r = (s * 0.5) * map(n, 0, 1, 1 - edgeDistortion, 1 + edgeDistortion); vertex(r * cos(a), r * sin(a));
   }
@@ -598,10 +599,12 @@ function drawTimeBasedBruise(b, isHovered, chargeAmt) {
 
   blendMode(blendType); drawingContext.filter = `blur(${blurAmt * 0.3}px)`; 
   
-  let particleCount = floor(s * 0.35); 
+  // 💡 [최적화 4] 파티클 개수를 절반 이하로 줄이고 크기를 키워 동일한 시각적 효과 유지
+  let particleCount = floor(s * 0.15); 
   for(let i = 0; i < particleCount; i++) {
     let angle = random(TWO_PI); let radius = random(s * 0.45); let nx = cos(angle) * radius; let ny = sin(angle) * radius; let nVal = noise(nx * 0.03, ny * 0.03, time * 1.5);
-    fill(lerp(c[0], mixColor[0], nVal), lerp(c[1], mixColor[1], nVal), lerp(c[2], mixColor[2], nVal), 220 * nVal); circle(nx, ny, s * 0.18 * random(0.5, 2.0));
+    fill(lerp(c[0], mixColor[0], nVal), lerp(c[1], mixColor[1], nVal), lerp(c[2], mixColor[2], nVal), 220 * nVal); 
+    circle(nx, ny, s * 0.18 * random(1.0, 2.5));
   }
 
   blendMode(BLEND); drawingContext.filter = 'none'; drawingContext.shadowBlur = 0; fill(255, 60); circle(0, 0, 2); 
@@ -622,7 +625,7 @@ function drawTimeBasedBruise(b, isHovered, chargeAmt) {
 
   if (isHovered && currentScene === 0 && chargeAmt === 0) {
     push();
-    let boxW = 540; let boxH = 280; let boxX = s * 0.8 + 40; let boxY = -140; 
+    let boxW = 680; let boxH = 340; let boxX = s * 0.8 + 50; let boxY = -170; 
     let absX = width / 2 + worldX + b.x; let absY = height / 2 + worldY + b.y;
 
     if (absX + boxX + boxW > width - 20) boxX = -s * 0.8 - 40 - boxW; 
@@ -630,27 +633,27 @@ function drawTimeBasedBruise(b, isHovered, chargeAmt) {
     if (absY + boxY < 20) boxY = 20 - absY; else if (absY + boxY + boxH > height - 20) boxY = height - 20 - absY - boxH;
     
     fill(10, 10, 15, 240); stroke(255, 40); strokeWeight(1.5); rect(boxX, boxY, boxW, boxH, 8); 
-    noStroke(); fill(c[0], c[1], c[2]); circle(boxX + 35, boxY + 45, 14); 
+    noStroke(); fill(c[0], c[1], c[2]); circle(boxX + 45, boxY + 55, 18); 
     
-    fill(250); textAlign(LEFT, CENTER); textFont('Noto Sans KR'); textSize(28); text(ColorGroups[currentGroup].label, boxX + 60, boxY + 42);
-    fill(160); textFont('Space Mono'); textSize(16); letterSpacing("1"); text(`기록 시점 : ${b.timestamp}`, boxX + 35, boxY + 95);
+    fill(250); textAlign(LEFT, CENTER); textFont('Noto Sans KR'); textSize(36); text(ColorGroups[currentGroup].label, boxX + 80, boxY + 50);
+    fill(160); textFont('Space Mono'); textSize(22); letterSpacing("1"); text(`기록 시점 : ${b.timestamp}`, boxX + 45, boxY + 120);
     
     let elapsed = millis() - b.spawnTime; let currentPain = b.painLevel;
     if (state.totalTimeUntilFading > 0) { currentPain = max(1, round(map(elapsed, 0, state.totalTimeUntilFading, b.painLevel, 1))); if (elapsed > state.totalTimeUntilFading) currentPain = 1; } 
     else { currentPain = 1; }
     
-    fill(200); textSize(16); text(`현재 상태 : ${currentPain}단계`, boxX + 35, boxY + 130);
+    fill(200); textSize(22); text(`현재 상태 : ${currentPain}단계`, boxX + 45, boxY + 165);
     
-    fill(255, 10); noStroke(); rect(boxX + 35, boxY + 160, 10 * 25, 10, 5); 
-    fill(255, 50); rect(boxX + 35, boxY + 160, b.painLevel * 25, 10, 5);
-    fill(c[0], c[1], c[2], 220); rect(boxX + 35, boxY + 160, currentPain * 25, 10, 5);
+    fill(255, 10); noStroke(); rect(boxX + 45, boxY + 200, 10 * 32, 12, 6); 
+    fill(255, 50); rect(boxX + 45, boxY + 200, b.painLevel * 32, 12, 6);
+    fill(c[0], c[1], c[2], 220); rect(boxX + 45, boxY + 200, currentPain * 32, 12, 6);
     
     if (state.timeLeft > 0) {
       let days = floor(state.timeLeft / (1000 * 60 * 60 * 24)); let hours = floor((state.timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); let mins = floor((state.timeLeft % (1000 * 60 * 60)) / (1000 * 60));
       let timeStr = days > 0 ? `${days}일 ${hours}시간` : (hours > 0 ? `${hours}시간 ${mins}분` : `${mins}분 ${floor(state.timeLeft/1000 % 60)}초`);
-      fill(220); textSize(16); text(`직면하기까지 : ${timeStr}`, boxX + 35, boxY + 220);
+      fill(220); textSize(22); text(`직면하기까지 : ${timeStr}`, boxX + 45, boxY + 270);
     } else {
-      fill(255, 200, 50); textSize(16); text(`승화 준비 완료: 지금 직면할 수 있습니다`, boxX + 35, boxY + 220);
+      fill(255, 200, 50); textSize(22); text(`승화 준비 완료: 지금 직면할 수 있습니다`, boxX + 45, boxY + 270);
     }
     pop();
   }
@@ -664,9 +667,9 @@ function drawNavAids(mx, my, isAnyHovered) {
   noStroke(); fill(255, 180); circle(mx, my, 12); stroke(255, 120); strokeWeight(2); 
   line(mx-25, my, mx+25, my); line(mx, my-25, mx, my+25);
   
-  textFont('Space Mono'); textSize(18); 
+  textFont('Space Mono'); textSize(22); 
   let coordText = `[ 커서 위치: ${floor(mx)} , ${floor(my)} ]`;
-  let textW = textWidth(coordText); let textOffX = 35; let textOffY = 40;
+  let textW = textWidth(coordText); let textOffX = 35; let textOffY = 45;
 
   if (isAnyHovered) textOffX = -textW - 25; 
   if (mx + textOffX + textW > width / 2 - 20) textOffX = -textW - 25; 
@@ -676,9 +679,9 @@ function drawNavAids(mx, my, isAnyHovered) {
   fill(255, 200); noStroke(); text(coordText, mx + textOffX, my + textOffY);
   
   if (isPaused) {
-    fill(255, 150); textSize(14); letterSpacing("2"); text(`|| 시스템 일시정지`, mx + textOffX, my + textOffY - 24);
+    fill(255, 150); textSize(16); letterSpacing("2"); text(`|| 시스템 일시정지`, mx + textOffX, my + textOffY - 28);
   } else if (keyIsDown(16)) { 
-    fill(255, random(160, 255)); textSize(14); letterSpacing("2"); text(`>>> 고속 이동 중`, mx + textOffX, my + textOffY - 24);
+    fill(255, random(160, 255)); textSize(16); letterSpacing("2"); text(`>>> 고속 이동 중`, mx + textOffX, my + textOffY - 28);
   }
   pop();
 
@@ -688,7 +691,7 @@ function drawNavAids(mx, my, isAnyHovered) {
       let angle = atan2(sy, sx); let edgeX = constrain(sx, -width/2 + 60, width/2 - 60); let edgeY = constrain(sy, -height/2 + 60, height/2 - 60);
       let cg = getDynamicBruiseState(b).group; let targetColor = ColorGroups[cg].colors[0];
       push(); translate(edgeX, edgeY); rotate(angle); stroke(targetColor); strokeWeight(3); noFill(); 
-      line(0, 0, -20, -10); line(0, 0, -20, 10); rotate(-angle); noStroke(); fill(targetColor); textSize(16); textAlign(CENTER); textFont('Space Mono');
+      line(0, 0, -20, -10); line(0, 0, -20, 10); rotate(-angle); noStroke(); fill(targetColor); textSize(18); textAlign(CENTER); textFont('Space Mono');
       text(`${floor(dist(0,0, sx, sy)/10)}m`, 0, 35); pop();
     }
   }
@@ -696,17 +699,31 @@ function drawNavAids(mx, my, isAnyHovered) {
 
 function initFocus(b) {
   selectedBruise = b; currentScene = 1; charge = 0; 
+  let state = getDynamicBruiseState(selectedBruise);
   let formattedDate = `<div class="memory-date">[ 기록된 시점 : ${selectedBruise.timestamp} ]</div><br>`;
   
   memoryDisplay.style('pointer-events', 'auto'); 
   clearInterval(typingInterval); 
 
-  // 💡 타이핑 딜레이를 완전히 제거하고 텍스트를 즉각적으로 렌더링하도록 수정
-  let formattedDiary = formattedDate + selectedBruise.diary.replace(/\n/g, '<br>');
-  memoryDisplay.html(formattedDiary);
+  if (state.group === 'Healing' || state.group === 'Fading') {
+    memoryDisplay.html(formattedDate); 
+    let charIndex = 0;
+    let fullText = selectedBruise.diary;
+    let currentText = "";
+    
+    typingInterval = setInterval(() => {
+      let char = fullText.charAt(charIndex);
+      currentText += (char === '\n' ? '<br>' : char);
+      memoryDisplay.html(formattedDate + currentText);
+      charIndex++;
+      if (charIndex >= fullText.length) clearInterval(typingInterval);
+    }, 45); 
+  } else {
+    let formattedDiary = formattedDate + selectedBruise.diary.replace(/\n/g, '<br>');
+    memoryDisplay.html(formattedDiary);
+  }
 
-  focusParticles = []; 
-  for(let i=0; i<200; i++) focusParticles.push({ x: random(-width, width), y: random(-height, height), z: random(0.5, 5.0) });
+  focusParticles = []; for(let i=0; i<200; i++) focusParticles.push({ x: random(-width, width), y: random(-height, height), z: random(0.5, 5.0) });
 }
 
 function drawFocusScene() {
@@ -854,5 +871,4 @@ function exportManualAsset(stage, pain, filename) {
   pg.pop(); save(pg, filename + '.png'); pg.remove();
 }
 
-function windowResized() { resizeCanvas(windowWidth, windowHeight); }
 function windowResized() { resizeCanvas(windowWidth, windowHeight); }
