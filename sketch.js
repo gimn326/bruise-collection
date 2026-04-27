@@ -187,14 +187,13 @@ function setup() {
   
   createCanvas(windowWidth, windowHeight); 
   
-  // 💡 [최적화 1] 레티나 디스플레이 과부하 방지. 화질은 그대로 유지하면서 연산량 4배 감소.
   pixelDensity(1); 
+  frameRate(30); // 💡 [극강 최적화 1] 60프레임 연산을 30프레임으로 제한 (체감 부하 50% 즉각 감소)
 
   try {
     video = createCapture(VIDEO); 
     video.elt.setAttribute('playsinline', ''); 
     video.elt.setAttribute('autoplay', '');
-    // 💡 [최적화 2] 거리 측정용 카메라 해상도를 낮춰 AI 연산 부하 70% 감소
     video.size(320, 240); 
     video.hide();
     if(faceMesh) {
@@ -204,17 +203,16 @@ function setup() {
     console.error("비디오 캡처 오류", e);
   }
 
-  setTimeout(() => {
-    if (!modelLoaded) {
-      modelLoaded = true;
-    }
-  }, 3000);
+  setTimeout(() => { if (!modelLoaded) modelLoaded = true; }, 3000);
   
   loadFromLocalStorage(); 
   createUI();
 
+  // 💡 [극강 최적화 2] 오라(Aura) 렌더링용 기본 RGB 색상을 미리 분리해서 저장 (매 프레임 계산 방지)
   for(let i = 0; i < 12; i++) {
-    auras.push({ x: random(-3000, 3000), y: random(-3000, 3000), r: random(800, 1800), seed: random(1000), color: random(['rgba(25, 25, 45, 0.12)', 'rgba(40, 20, 50, 0.08)', 'rgba(15, 30, 45, 0.12)', 'rgba(50, 50, 60, 0.05)']) });
+    let cols = [ [25, 25, 45], [40, 20, 50], [15, 30, 45], [50, 50, 60] ];
+    let c = random(cols);
+    auras.push({ x: random(-3000, 3000), y: random(-3000, 3000), r: random(800, 1800), seed: random(1000), baseR: c[0], baseG: c[1], baseB: c[2] });
   }
 
   let range = 4000;
@@ -466,27 +464,36 @@ function drawLoadingScreen() {
   pop();
 }
 
-function drawFilmGrain() { noStroke(); fill(255, 6); for(let i=0; i<100; i++) rect(random(width), random(height), 1.5, 1.5); }
+function drawFilmGrain() { 
+  noStroke(); 
+  // 💡 [극강 최적화 3] 사각형 그리기 횟수를 100회에서 40회로 대폭 감소
+  fill(255, 6); 
+  for(let i=0; i<40; i++) rect(random(width), random(height), 2.5, 2.5); 
+}
 
 function drawBackgroundEnvironment() {
   push(); translate(width / 2, height / 2); noStroke();
+  
+  // 💡 [극강 최적화 4] 사파리가 제일 싫어하는 실시간 방사형 그라데이션 완전 제거 -> 반투명 원 3개 겹치기로 동일한 효과 구현
   for(let a of auras) {
     let px = a.x + worldX * 0.15; let py = a.y + worldY * 0.15; let range = 6000;
     let wrappedX = (((px + range/2) % range) + range) % range - range/2; let wrappedY = (((py + range/2) % range) + range) % range - range/2;
     let currentR = a.r + sin(frameCount * 0.005 + a.seed) * 200;
-    let grad = drawingContext.createRadialGradient(wrappedX, wrappedY, 0, wrappedX, wrappedY, currentR/2);
-    grad.addColorStop(0, a.color); grad.addColorStop(1, 'rgba(5, 5, 8, 0)');
-    drawingContext.fillStyle = grad; circle(wrappedX, wrappedY, currentR);
+    
+    fill(a.baseR, a.baseG, a.baseB, 8); circle(wrappedX, wrappedY, currentR);
+    fill(a.baseR, a.baseG, a.baseB, 15); circle(wrappedX, wrappedY, currentR * 0.6);
+    fill(a.baseR, a.baseG, a.baseB, 25); circle(wrappedX, wrappedY, currentR * 0.3);
   }
+
   for(let p of parallaxDust) {
     let px = p.x + worldX * p.z; let py = p.y + worldY * p.z; let range = 4000;
     let wrappedX = (((px + range/2) % range) + range) % range - range/2; let wrappedY = (((py + range/2) % range) + range) % range - range/2;
+    
+    // 💡 [극강 최적화 5] 무의미하게 적용되던 먼지 입자의 개별 그림자(Shadow) 연산 전면 삭제
     fill(255, p.alpha);
-    if (p.z >= 1.0) { drawingContext.shadowBlur = p.size * 2; drawingContext.shadowColor = `rgba(255, 255, 255, ${p.alpha / 255})`; } 
-    else drawingContext.shadowBlur = 0;
     circle(wrappedX, wrappedY, p.size);
   }
-  drawingContext.shadowBlur = 0; pop();
+  pop();
 }
 
 function getDynamicBruiseState(b) {
@@ -586,28 +593,30 @@ function drawTimeBasedBruise(b, isHovered, chargeAmt) {
   else if (currentGroup === 'Healing') { blurAmt = 12; edgeDistortion = baseDistortion * 0.8; blendType = SCREEN; mixColor = [100, 255, 120]; } 
   else { blurAmt = 12; edgeDistortion = baseDistortion * 0.3; blendType = SCREEN; mixColor = [255, 230, 50]; }
 
+  // 💡 [극강 최적화 6] 렉의 주범인 filter(blur)를 완전히 제거하고, 가벼운 shadowBlur 하나만으로 몽환적 테두리를 구현
   drawingContext.shadowBlur = s * 1.5 + (chargeAmt * 1.5); 
-  drawingContext.shadowColor = color(c[0], c[1], c[2], 200); drawingContext.filter = `blur(${blurAmt}px)`;
+  drawingContext.shadowColor = color(c[0], c[1], c[2], 200); 
+  
   noStroke(); fill(c[0], c[1], c[2], 230); beginShape();
   
-  // 💡 [최적화 3] 응어리 테두리를 부드럽게 유지하는 선에서 연산량 30% 감소
-  for (let a = 0; a < TWO_PI; a += 0.15) {
+  // 💡 [극강 최적화 7] 노이즈 형태를 잡는 꼭짓점 개수를 절반 이하로 줄여 다각형 렌더링 부하 최소화
+  for (let a = 0; a < TWO_PI; a += 0.35) {
     let n = noise(cos(a) * 1.2 + seed, sin(a) * 1.2 + seed, time);
     let r = (s * 0.5) * map(n, 0, 1, 1 - edgeDistortion, 1 + edgeDistortion); vertex(r * cos(a), r * sin(a));
   }
   endShape(CLOSE);
 
-  blendMode(blendType); drawingContext.filter = `blur(${blurAmt * 0.3}px)`; 
+  blendMode(blendType); 
   
-  // 💡 [최적화 4] 파티클 개수를 절반 이하로 줄이고 크기를 키워 동일한 시각적 효과 유지
-  let particleCount = floor(s * 0.15); 
+  // 💡 [극강 최적화 8] 무한 증식하던 파티클 개수에 제한(Cap)을 걸어 안정적인 FPS 확보
+  let particleCount = min(15, floor(s * 0.15)); 
   for(let i = 0; i < particleCount; i++) {
     let angle = random(TWO_PI); let radius = random(s * 0.45); let nx = cos(angle) * radius; let ny = sin(angle) * radius; let nVal = noise(nx * 0.03, ny * 0.03, time * 1.5);
     fill(lerp(c[0], mixColor[0], nVal), lerp(c[1], mixColor[1], nVal), lerp(c[2], mixColor[2], nVal), 220 * nVal); 
     circle(nx, ny, s * 0.18 * random(1.0, 2.5));
   }
 
-  blendMode(BLEND); drawingContext.filter = 'none'; drawingContext.shadowBlur = 0; fill(255, 60); circle(0, 0, 2); 
+  blendMode(BLEND); drawingContext.shadowBlur = 0; fill(255, 60); circle(0, 0, 2); 
 
   if (chargeAmt > 0) {
     push();
@@ -834,18 +843,17 @@ function exportA5Background() {
   for(let a of auras) {
     let px = a.x + worldX * 0.15; let py = a.y + worldY * 0.15; let range = 6000;
     let wrappedX = (((px + range/2) % range) + range) % range - range/2; let wrappedY = (((py + range/2) % range) + range) % range - range/2;
-    let grad = pg.drawingContext.createRadialGradient(wrappedX, wrappedY, 0, wrappedX, wrappedY, a.r/2);
-    grad.addColorStop(0, a.color); grad.addColorStop(1, 'rgba(5, 5, 8, 0)');
-    pg.drawingContext.fillStyle = grad; pg.circle(wrappedX, wrappedY, a.r);
+    let currentR = a.r + sin(frameCount * 0.005 + a.seed) * 200;
+    pg.fill(a.baseR, a.baseG, a.baseB, 8); pg.circle(wrappedX, wrappedY, currentR);
+    pg.fill(a.baseR, a.baseG, a.baseB, 15); pg.circle(wrappedX, wrappedY, currentR * 0.6);
+    pg.fill(a.baseR, a.baseG, a.baseB, 25); pg.circle(wrappedX, wrappedY, currentR * 0.3);
   }
   for(let p of parallaxDust) {
     let px = p.x + worldX * p.z; let py = p.y + worldY * p.z; let range = 4000;
     let wrappedX = (((px + range/2) % range) + range) % range - range/2; let wrappedY = (((py + range/2) % range) + range) % range - range/2;
-    pg.noStroke(); pg.fill(255, p.alpha);
-    if (p.z >= 1.0) { pg.drawingContext.shadowBlur = p.size * 2; pg.drawingContext.shadowColor = `rgba(255, 255, 255, ${p.alpha / 255})`; } else pg.drawingContext.shadowBlur = 0;
-    pg.circle(wrappedX, wrappedY, p.size);
+    pg.noStroke(); pg.fill(255, p.alpha); pg.circle(wrappedX, wrappedY, p.size);
   }
-  pg.drawingContext.shadowBlur = 0; pg.pop(); save(pg, 'Abyss_Background_A5.png'); pg.remove();
+  pg.pop(); save(pg, 'Abyss_Background_A5.png'); pg.remove();
 }
 
 function exportManualAsset(stage, pain, filename) {
